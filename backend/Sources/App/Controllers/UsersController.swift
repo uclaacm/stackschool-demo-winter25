@@ -1,10 +1,3 @@
-//
-//  UsersController.swift
-//  bruineats-server-app
-//
-//  Created by Sneha Agarwal on 1/10/25.
-//
-
 import Foundation
 import Vapor
 import Fluent
@@ -31,7 +24,7 @@ class UsersController: RouteCollection {
             .filter(\.$username == user.username)
             .first() else {
             return LoginResponseDTO(error: true, reason: "Username is not found.")
-            }
+        }
         
         // validate the password
         let result = try await req.password.async.verify(user.password, created: existingUser.password)
@@ -66,55 +59,4 @@ class UsersController: RouteCollection {
         try await user.save(on: req.db)
         return RegisterResponseDTO(error: false)
     }
-    
-    
-    func updateUser(req: Request) async throws -> User {
-        guard let userId = req.parameters.get("userId", as: UUID.self) else {
-            throw Abort(.notFound)
-        }
-        
-        guard let user = try await User.find(userId, on: req.db) else {
-            throw Abort(.notFound)
-        }
-        
-        // decode the body
-        let updateUser = try req.content.decode(User.self)
-        user.username = updateUser.username
-        user.password = updateUser.password
-        
-        try await user.update(on: req.db)
-        return user
-    }
-    func deleteUser(req: Request) async throws -> User {
-        guard let userId = req.parameters.get("userId", as: UUID.self) else {
-            throw Abort(.notFound)
-        }
-        
-        guard let user = try await User.find(userId, on: req.db) else {
-            throw Abort(.notFound)
-        }
-        
-        try await user.delete(on: req.db)
-        return user
-    }
-    
-    func getById(req: Request) async throws -> User {
-        guard let userId = req.parameters.get("userId", as: UUID.self) else {
-            throw Abort(.notFound)
-        }
-        
-        guard let user = try await User.find(userId, on: req.db) else {
-            throw Abort(.notFound, reason: "UserId \(userId) was not found.")
-        }
-        return user
-    }
-    
-    func getAll(req: Request) async throws -> [User] {
-        return try await User.query(on: req.db)
-            .all()
-    }
-    
-    
 }
-
-
