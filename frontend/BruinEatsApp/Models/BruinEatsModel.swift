@@ -1,10 +1,3 @@
-//
-//  BruinEatsModel.swift
-//  BruinEatsApp
-//
-//  Created by Sneha Agarwal on 1/10/25.
-//
-
 import Foundation
 
 class BruinEatsModel: ObservableObject {
