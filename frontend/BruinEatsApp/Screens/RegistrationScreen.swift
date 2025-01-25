@@ -1,3 +1,5 @@
+// RegistrationScreen.swift
+
 import SwiftUI
 
 struct RegistrationScreen: View {
@@ -30,31 +32,104 @@ struct RegistrationScreen: View {
         }
     }
     
+//    var body: some View {
+//
+//        Form {
+//                        TextField("Username", text: $username)
+//                .textInputAutocapitalization(.never)
+//            SecureField("Password", text: $password)
+//            
+//            HStack {
+//                Button("Register") {
+//                    Task {
+//                        await register()
+//                    }
+//                }.buttonStyle(.borderless)
+//                    .disabled(!isFormValid)
+//                
+//                Spacer()
+//                
+//                Button("Login") {
+//                    appState.routes.append(.login)
+//                }.buttonStyle(.borderless)
+//            }
+//            
+//            Text(errorMessage)
+//            
+//        }
+//        .navigationTitle("Registration")    }
     var body: some View {
-        Form {
-            TextField("Username", text: $username)
-                .textInputAutocapitalization(.never)
-            SecureField("Password", text: $password)
+        VStack {
+            Image("Logo") // Replace "YourLogoName" with the actual name of your logo asset
+                            .resizable()
+                            .scaledToFit()
+                            .frame(height: 100) // Adjust the size as needed
+                            .padding(.top, 30)
+                            .padding( .bottom, 20)
+
+            // Header
+            Text("Register")
+                .font(.largeTitle)
+                .fontWeight(.bold)
+                .padding(.bottom, 20)
             
-            HStack {
-                Button("Register") {
+            // Form fields
+            VStack(spacing: 16) {
+                TextField("Username", text: $username)
+                    .padding()
+                    .background(Color.gray.opacity(0.2))
+                    .cornerRadius(10)
+                    .textInputAutocapitalization(.never)
+                
+                SecureField("Password", text: $password)
+                    .padding()
+                    .background(Color.gray.opacity(0.2))
+                    .cornerRadius(10)
+            }
+            .padding(.horizontal, 24)
+            
+            // Error message
+            if !errorMessage.isEmpty {
+                Text(errorMessage)
+                    .foregroundColor(.red)
+                    .font(.subheadline)
+                    .padding(.top, 8)
+            }
+            
+            // Buttons
+            HStack(spacing: 16) {
+
+                
+                Button(action: {
+                    appState.routes.append(.login)
+                }) {
+                    Text("Login").frame(maxWidth: .infinity)
+                        .padding()
+                        .foregroundColor(.blue).cornerRadius(10)
+                }.frame(maxWidth: .infinity)
+                
+                Button(action: {
                     Task {
                         await register()
                     }
-                }.buttonStyle(.borderless)
-                    .disabled(!isFormValid)
-                
-                Spacer()
-                
-                Button("Login") {
-                    appState.routes.append(.login)
-                }.buttonStyle(.borderless)
+                }) {
+                    Text("Register")
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(isFormValid ? Color.blue : Color.gray)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                }
+                .disabled(!isFormValid).frame(maxWidth: .infinity)
             }
+            .padding(.horizontal, 24)
+            .padding(.top, 16)
             
-            Text(errorMessage)
-            
+            Spacer()
         }
-        .navigationTitle("Registration")
+        .padding()
+        .background(Color(.systemGroupedBackground))
+        .navigationBarHidden(true)
     }
 }
 struct RegistrationScreenContainer: View {
@@ -71,7 +146,7 @@ struct RegistrationScreenContainer: View {
                             RegistrationScreen()
                         case .login:
                             LoginScreen()
-                        case .bruineatsList:
+                    case .restaurantlistview:
                             Text("bruin eats list")
                     }
                 }

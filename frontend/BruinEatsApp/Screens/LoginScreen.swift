@@ -19,30 +19,106 @@ struct LoginScreen: View {
             if loginResponseDTO.error {
                 errorMessage = loginResponseDTO.reason ?? ""
             } else {
-                appState.routes.append(.bruineatsList)
+                appState.routes.append(.restaurantlistview)
             }
         } catch {
             errorMessage = "error.localizedDescription"
         }
     }
     
+//    var body: some View {
+//        Form {
+//            TextField("Username", text: $username)
+//                .textInputAutocapitalization(.never)
+//            SecureField("Password", text: $password)
+//            
+//            HStack {
+//                Button("Login") {
+//                    Task {
+//                        await login()
+//                    }
+//                }.buttonStyle(.borderless)
+//                    .disabled(!isFormValid)
+//            }
+//            Text(errorMessage)
+//        }.navigationTitle("Login")
+//    }
     var body: some View {
-        Form {
+
+    VStack {
+        // Logo at the top
+        Image("Logo") // Replace "YourLogoName" with your logo asset name
+            .resizable()
+            .scaledToFit()
+            .frame(height: 100)
+            .padding(.top, 40)
+            .padding(.bottom, 20)
+        
+        // Header
+        Text("Login")
+            .font(.largeTitle)
+            .fontWeight(.bold)
+            .padding(.bottom, 20)
+        
+        // Form fields
+        VStack(spacing: 16) {
             TextField("Username", text: $username)
+                .padding()
+                .background(Color.gray.opacity(0.2))
+                .cornerRadius(10)
                 .textInputAutocapitalization(.never)
-            SecureField("Password", text: $password)
             
-            HStack {
-                Button("Login") {
-                    Task {
-                        await login()
-                    }
-                }.buttonStyle(.borderless)
-                    .disabled(!isFormValid)
-            }
+            SecureField("Password", text: $password)
+                .padding()
+                .background(Color.gray.opacity(0.2))
+                .cornerRadius(10)
+        }
+        .padding(.horizontal, 24)
+        
+        // Error message
+        if !errorMessage.isEmpty {
             Text(errorMessage)
-        }.navigationTitle("Login")
+                .foregroundColor(.red)
+                .font(.subheadline)
+                .padding(.top, 8)
+        }
+        HStack(spacing: 16) {
+            
+            Button(action: {
+//                appState.routes.append(.register)
+                appState.routes.removeLast()
+
+            }) {
+                Text("Register").frame(maxWidth: .infinity)
+                    .padding()
+                    .foregroundColor(.blue).cornerRadius(10)
+            }.frame(maxWidth: .infinity)            .padding(.horizontal, 24)
+                .padding(.top, 16)
+            // Login Button
+            Button(action: {
+                Task {
+                    await login()
+                }
+            }) {
+                Text("Login")
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(isFormValid ? Color.blue : Color.gray)
+                    .foregroundColor(.white)
+                    .cornerRadius(10)
+            }.frame(maxWidth: .infinity)
+            .disabled(!isFormValid)
+            .padding(.horizontal, 24)
+            .padding(.top, 16)
+        }
+        
+        Spacer()
     }
+    .padding()
+    .background(Color(.systemGroupedBackground))
+    .navigationBarHidden(true)
+}
+
 }
 
 #Preview {

@@ -8,5 +8,8 @@ struct Constants {
         
         static let register = URL(string: "\(baseUrlPath)/register")!
         static let login = URL(string: "\(baseUrlPath)/login")!
+        static let restaurants = URL(string: "\(baseUrlPath)/restaurants")!
+        static let reviews = URL(string: "\(baseUrlPath)/reviews")!
+
     }
 }

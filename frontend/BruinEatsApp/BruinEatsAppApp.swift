@@ -15,8 +15,8 @@ struct BruinEatsAppApp: App {
                             RegistrationScreen()
                         case .login:
                             LoginScreen()
-                        case .bruineatsList:
-                            BruinEatsList()
+                        case .restaurantlistview:
+                            RestaurantListView()
                         }
                     }
             }

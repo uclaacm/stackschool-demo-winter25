@@ -1,7 +1,9 @@
 import Foundation
 import JWT
+import Fluent
+import Vapor
 
-struct AuthPayload: JWTPayload {
+struct AuthPayload: JWTPayload, Authenticatable {
     typealias Payload = AuthPayload
     
     enum CodingKeys: String, CodingKey {

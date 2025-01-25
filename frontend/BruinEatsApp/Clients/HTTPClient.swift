@@ -52,7 +52,15 @@ struct HTTPClient {
     
     func load<T: Codable>(_ resource: Resource<T>) async throws -> T {
         
+        
         var request = URLRequest(url: resource.url)
+        
+        // Add auth token to request header
+        if let token = UserDefaults.standard.string(forKey: "authToken") {
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
         
         switch resource.method {
             case .get(let queryItems):
@@ -72,9 +80,17 @@ struct HTTPClient {
                 request.httpMethod = resource.method.name
         }
         
-        let configuration = URLSessionConfiguration.default
-        configuration.httpAdditionalHeaders = ["Content-Type": "application/json"]
-        let session = URLSession(configuration: configuration)
+//        let configuration = URLSessionConfiguration.default
+//        configuration.httpAdditionalHeaders = ["Content-Type": "application/json"]
+//        
+//        // Add auth token if available
+//        if let token = UserDefaults.standard.string(forKey: "authToken") {
+//            configuration.httpAdditionalHeaders?["Authorization"] = "Bearer \(token)"
+//        }
+
+//        let session = URLSession(configuration: configuration)
+        let session = URLSession.shared
+
         
         let (data, response) = try await session.data(for: request)
         
@@ -83,13 +99,18 @@ struct HTTPClient {
         }
         
         switch httpResponse.statusCode {
+            case 401:
+                throw NetworkError.serverError("Unauthorized")
+
             case 409:
                 throw NetworkError.serverError("Username is already taken.")
             default:
                 break
         }
-        
-        guard let result = try? JSONDecoder().decode(resource.modelType, from: data) else {
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+
+        guard let result = try? decoder.decode(resource.modelType, from: data) else {
             throw NetworkError.decodingError
         }
         
